@@ -23,6 +23,8 @@ public class MainActivityViewModel extends AndroidViewModel{
     private MutableLiveData<String> nombre;
     private MutableLiveData<String> password;
 
+    private boolean logueado = false;
+
     public LiveData<String> getNombre() {
         if(nombre == null){
             MutableLiveData nombre = new MutableLiveData();
@@ -39,38 +41,30 @@ public class MainActivityViewModel extends AndroidViewModel{
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
     }
-
-    //La funcion llama al metodo validar, luego llama a la funcion login del ApiClient para crear el usuario, luego guarda los datos para mostrarlos en el registroActivity
-    //despues a traves de un intent redirige al registroActivity usando una bandera porque estamos en el viewModel
-    public void login(Context contexto, String email, String password){
+    public void login(String email, String password){
        ApiClient ap = new ApiClient();
        validar(contexto, email, password);
        Usuario usuario = ap.login(contexto, email, password);
-       guardar(contexto, usuario);
-       Intent intent = new Intent(contexto, RegistroActivity.class);
-       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-       contexto.startActivity(intent);
+       if(usuario != null){
+           guardar(contexto, usuario);
+           Intent intent = new Intent(contexto, RegistroActivity.class);
+           intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+           logueado= true;
+           contexto.startActivity(intent);
+       }else{
+           logueado=false;
+           vacio();
+       }
     }
-
-
-    //La funcion valida los datos si estos estan vacios lo redirige al RegistroActivity con los campos vacios para que se registre
-    // y agrega un toast recordandole que los campos no deben estar vacios, si usuario o contraseña son incorrectos muestra un toast con l mensaje
-    // si esta todo bien valida la entrada.
     public void validar(Context contexto, String email, String password){
         if(email.isEmpty() && password.isEmpty()){
-            vacio(contexto);
+            vacio();
             Toast.makeText(contexto, "No puede haber campos vacios", Toast.LENGTH_SHORT).show();
-        }
-        else if(!email.equals(email) && !password.equals(password)){
-            Toast.makeText(contexto, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-        }else{
-            leer(contexto);
-            Toast.makeText(contexto, "Bienvenido", Toast.LENGTH_SHORT).show();
         }
     }
 
     //Si los datos estan vacios redirige al RegistroActivity para que se registre
-    public void vacio(Context contexto){
+    public void vacio(){
         Intent intent = new Intent(contexto, RegistroActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         contexto.startActivity(intent);
