@@ -20,24 +20,8 @@ import com.example.loginactivity.ui.register.RegistroActivity;
 public class MainActivityViewModel extends AndroidViewModel{
 
     private Context contexto;
-    private MutableLiveData<String> nombre;
-    private MutableLiveData<String> password;
-
     private boolean logueado = false;
 
-    public LiveData<String> getNombre() {
-        if(nombre == null){
-            MutableLiveData nombre = new MutableLiveData();
-        }
-        return nombre;
-    }
-
-    public LiveData<String> getPassword() {
-        if(password == null){
-            MutableLiveData password = new MutableLiveData();
-        }
-        return password;
-    }
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
     }
@@ -52,13 +36,11 @@ public class MainActivityViewModel extends AndroidViewModel{
            logueado= true;
            contexto.startActivity(intent);
        }else{
-           logueado=false;
-           vacio();
+           Toast.makeText(contexto, "Usuario y/o Contraseña incorrectos", Toast.LENGTH_LONG).show();
        }
     }
     public void validar(Context contexto, String email, String password){
         if(email.isEmpty() && password.isEmpty()){
-            vacio();
             Toast.makeText(contexto, "No puede haber campos vacios", Toast.LENGTH_SHORT).show();
         }
     }
