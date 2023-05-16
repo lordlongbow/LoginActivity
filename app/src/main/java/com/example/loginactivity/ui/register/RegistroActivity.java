@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.loginactivity.databinding.RegistroActivityBinding;
+import com.example.loginactivity.modelos.Usuario;
 
 public class RegistroActivity extends AppCompatActivity {
 private RegistroActivityViewModel vm;
@@ -22,44 +23,22 @@ private RegistroActivityBinding binding;
 
 
         //Observers de los editTexts;
-        vm.getApellidoM().observe(this, new Observer<String>() {
+        vm.getUsuarioMutable().observe(this, new Observer<Usuario>() {
             @Override
-            public void onChanged(String s) {
-                binding.etApllidoUsuario.setText(s);
+            public void onChanged(Usuario usuario) {
+                binding.etNombreUsuario.setText(usuario.getNombre());
+                binding.etApllidoUsuario.setText(usuario.getApellido());
+                binding.etEmail.setText(usuario.getMail());
+                binding.etPassword.setText(usuario.getPassword());
+                binding.etDni.setText((int) usuario.getDni());
             }
         });
-        vm.getDniM().observe(this, new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-                binding.etDni.setText(String.valueOf(aLong));
-            }
-        });
-        vm.getEmailM().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.etEmail.setText(s);
-            }
-        });
-        vm.getNombreM().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String nombre) {
-                binding.etNombreUsuario.setText(nombre);
-            }
-        });
-        vm.getPasswordM().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String password) {
-                binding.etPassword.setText(password);
-            }
-        });
-
-        vm.leervm(RegistroActivity.this);
 
         //cuando el usuario toque en registro valida los datos y los guarda
         binding.btnRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             vm.registro(RegistroActivity.this);
+             vm.registro();
             }
         });
 
